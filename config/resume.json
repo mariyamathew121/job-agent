@@ -1,0 +1,214 @@
+{
+  "personal": {
+    "name": "Mariya Mathew",
+    "email": "mariya.mathew103@gmail.com",
+    "phone": "+91-9544800083",
+    "location": "Kottayam, Kerala, India",
+    "linkedin": "linkedin.com/in/mariya-mathew-03297525b",
+    "github": "https://github.com/mariyamathew121",
+    "portfolio": ""
+  },
+  "target": {
+    "roles": [
+      "Data Engineer",
+      "AI Engineer",
+      "Data Scientist",
+      "Machine Learning Engineer",
+      "Python Developer",
+      "Software Developer"
+    ],
+    "job_types": [
+      "full-time",
+      "remote",
+      "hybrid"
+    ],
+    "locations": [
+      "Kochi",
+      "Bangalore",
+      "Trivandrum",
+      "Remote"
+    ]
+  },
+  "summary": "Data Engineer with 1 year of professional experience at LTIMindtree. B.Tech in Artificial Intelligence and Data Science from Rajagiri School of Engineering and Technology (2025). Hands-on experience building RAG pipelines, NLP models, LLM-powered applications, and cloud data architectures on Azure and AWS through academic projects and internship work.",
+  "skills": {
+    "languages": [
+      "Python",
+      "SQL",
+      "JavaScript"
+    ],
+    "frameworks": [
+      "Flask",
+      "React.js",
+      "Django",
+      "Node.js",
+      "Bootstrap",
+      "REST API"
+    ],
+    "ai_ml": [
+      "Machine Learning",
+      "Deep Learning",
+      "NLP",
+      "RAG",
+      "Generative AI",
+      "Large Language Models",
+      "LLMs",
+      "PyTorch",
+      "TensorFlow",
+      "Scikit-learn",
+      "OpenCV",
+      "Agentic AI",
+      "Vector Databases",
+      "Prompt Engineering",
+      "LangChain",
+      "ChromaDB"
+    ],
+    "cloud": [
+      "AWS",
+      "Azure",
+      "Databricks",
+      "Azure Data Lake",
+      "ADF",
+      "Power BI"
+    ],
+    "tools": [
+      "Git",
+      "Docker",
+      "Kubernetes",
+      "PostgreSQL",
+      "MongoDB",
+      "MySQL",
+      "CI/CD"
+    ],
+    "other": [
+      "OOP",
+      "Data Structures",
+      "Algorithm Design",
+      "PySpark",
+      "Delta Lake",
+      "MediaPipe",
+      "NLTK",
+      "SBERT",
+      "SQLAlchemy",
+      "psycopg2"
+    ]
+  },
+  "experience": [
+    {
+      "title": "Data Engineer",
+      "company": "LTIMindtree (L&T)",
+      "location": "Bangalore",
+      "start": "May 2025",
+      "end": "Present",
+      "bullets": [
+        "Building and maintaining scalable data pipelines for enterprise clients using Python and SQL",
+        "Working with cloud data architectures and AI-powered data solutions on Azure and AWS",
+        "Collaborating on end-to-end intelligent data system design and optimisation"
+      ]
+    },
+    {
+      "title": "Data Science Intern",
+      "company": "G10X Technology Pvt. Ltd",
+      "location": "Infopark, Kochi, Kerala",
+      "start": "Jan 2025",
+      "end": "April 2025",
+      "bullets": [
+        "Built machine learning models and performed data preprocessing and analysis",
+        "Gained hands-on experience in end-to-end AI model development and evaluation",
+        "Worked with Python-based ML pipelines for real-world business problems"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "AI-Powered Natural Language Querying on Enterprise PAMS Databases",
+      "description": "Built a 3-sub-system AI layer on top of a PostgreSQL database with 167 million rows across 4 real-world datasets, enabling non-technical business users to query complex databases in plain English and receive accurate answers with business insights. Improved AI query success rate from 0% to 100% and reduced query turnaround from days to under 30 seconds.",
+      "tech": [
+        "Python",
+        "PostgreSQL",
+        "Claude AI",
+        "OpenRouter API",
+        "SQLAlchemy",
+        "Azure PostgreSQL",
+        "LLMs",
+        "RAG",
+        "psycopg2"
+      ],
+      "link": ""
+    },
+    {
+      "name": "Car Sales Analytics Using Azure Services",
+      "description": "Built end-to-end data analytics pipeline to analyse car sales across multiple branches and dealers. Ingested data into Azure Data Lake Gen2 using ADF, transformed in Azure Databricks with PySpark, applied Delta Lake bronze-silver-gold medallion architecture, secured with Key Vault and RBAC, and built Power BI dashboards for dealer performance and revenue insights.",
+      "tech": [
+        "Azure Data Lake Gen2",
+        "ADF",
+        "Databricks",
+        "PySpark",
+        "Delta Lake",
+        "Power BI",
+        "Azure Key Vault"
+      ],
+      "link": ""
+    },
+    {
+      "name": "RAG Evaluation System",
+      "description": "Designed a framework to evaluate and improve performance of Retrieval-Augmented Generation systems for answering queries from large document collections. Implemented RAG pipeline with document ingestion, text chunking, embedding generation, and semantic retrieval using vector search. Integrated LLMs to generate context-aware responses and built evaluation workflows to assess retrieval relevance and answer correctness.",
+      "tech": [
+        "Python",
+        "LLMs",
+        "RAG",
+        "Vector Search",
+        "NLP",
+        "ChromaDB",
+        "LangChain"
+      ],
+      "link": ""
+    },
+    {
+      "name": "HireSmart: AI-Driven Recruitment and Evaluation Platform",
+      "description": "Built end-to-end AI-powered hiring platform with automated resume screening, job matching, recruiter dashboards, and AI-proctored online assessments. Implemented NLP-based resume screener using SBERT for semantic matching and MediaPipe for real-time facial tracking during proctoring.",
+      "tech": [
+        "React.js",
+        "Flask",
+        "MongoDB",
+        "Python",
+        "TensorFlow",
+        "NLP",
+        "MediaPipe",
+        "SBERT",
+        "Bootstrap"
+      ],
+      "link": ""
+    },
+    {
+      "name": "AI Job Application Agent",
+      "description": "Agentic system that scrapes job boards across LinkedIn, Naukri, Indeed, and Wellfound simultaneously, analyses each job description using a RAG pipeline, tailors resume and cover letter per job using LLMs across 5 layers, scores ATS compatibility before submitting, and auto-submits applications via Selenium. Tracks all applications in PostgreSQL with skill gap reporting.",
+      "tech": [
+        "Python",
+        "LangChain",
+        "LangGraph",
+        "ChromaDB",
+        "Selenium",
+        "FastAPI",
+        "Redis",
+        "PostgreSQL"
+      ],
+      "link": ""
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.Tech in Artificial Intelligence and Data Science",
+      "institution": "Rajagiri School of Engineering and Technology",
+      "year": "2025",
+      "location": "Kochi, Kerala"
+    }
+  ],
+  "certifications": [
+    "Deep Learning by IIT Ropar - NPTEL",
+    "AWS Developing Machine Learning Solutions",
+    "AWS Developing Generative Artificial Intelligence Solutions",
+    "IBM Introduction to Cloud Computing - Coursera",
+    "Deloitte Data Analytics Job Simulation",
+    "HackerRank Python Assessment"
+  ]
+}

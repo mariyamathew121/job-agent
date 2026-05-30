@@ -1,0 +1,33 @@
+# Virtual environment
+venv/
+
+# Environment variables — never commit this
+.env
+
+# Scraped data and personal files
+data/
+
+# ChromaDB vector store
+data/vectorstore/
+
+# Generated PDFs
+data/resumes/
+
+# Database
+data/applications.db
+
+# Cookies — contain your login sessions
+data/*_cookies.pkl
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
