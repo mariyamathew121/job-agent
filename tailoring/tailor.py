@@ -90,6 +90,48 @@ Return a JSON array like:
 [{{"name": "project name", "description": "rewritten description", "tech": ["tech1"]}}]""")
 ])
 
+# ── Helper: strip LLM narration prefixes ──────────────────────────────
+
+def strip_llm_prefix(content: str) -> str:
+    """
+    Strips common LLM narration prefixes like:
+    'Here is a rewritten summary:' or 'Rewritten summary:'
+    """
+    prefixes_to_remove = [
+        "here is a rewritten summary that matches the job description:",
+        "here is a rewritten summary:",
+        "here's a rewritten summary:",
+        "here is the rewritten summary:",
+        "here's the rewritten summary:",
+        "rewritten summary:",
+        "here is a summary:",
+        "here's a summary:",
+        "here is the summary:",
+        "here is a revised summary:",
+        "here's a revised summary:",
+        "summary:",
+    ]
+
+    content_stripped = content.strip()
+    content_lower    = content_stripped.lower()
+
+    for prefix in prefixes_to_remove:
+        if content_lower.startswith(prefix):
+            content_stripped = content_stripped[len(prefix):].strip()
+            break
+
+    if ":" in content_stripped[:120]:
+        first_line      = content_stripped.split("\n")[0].lower()
+        narration_words = ["here is", "here's", "rewritten", "below"]
+        if any(word in first_line for word in narration_words) and \
+           len(first_line) < 120:
+            remaining = content_stripped[
+                content_stripped.index(":") + 1:
+            ].strip()
+            if remaining:
+                content_stripped = remaining
+
+    return content_stripped
 
 # ── Layer 1: rewrite summary ───────────────────────────────────────────
 
@@ -97,26 +139,21 @@ def rewrite_summary(original_summary: str, jd_analysis: dict,
                     job_title: str) -> str:
     """Rewrites the resume summary to match this specific job."""
 
-    content = result.content.strip()
+    chain = SUMMARY_PROMPT | llm_creative
 
-    # Strip LLM narration prefixes if model adds them
-    prefixes_to_remove = [
-        "here is a rewritten summary",
-        "here's a rewritten summary",
-        "rewritten summary:",
-        "here is the rewritten summary",
-        "here is a summary",
-        "here's the summary",
-    ]
-    content_lower = content.lower()
-    for prefix in prefixes_to_remove:
-        if content_lower.startswith(prefix):
-            # Remove everything up to and including the first colon
-            if ":" in content:
-                content = content[content.index(":") + 1:].strip()
-            break
+    try:
+        result = chain.invoke({
+            "job_title":        job_title,
+            "company_tone":     jd_analysis.get("company_tone", "professional"),
+            "required_skills":  ", ".join(jd_analysis["required_skills"][:5]),
+            "ats_keywords":     ", ".join(jd_analysis["keywords_for_ats"][:6]),
+            "original_summary": original_summary
+        })
+        return strip_llm_prefix(result.content)
 
-    return content
+    except Exception as e:
+        print(f"    Summary rewrite failed: {e}")
+        return original_summary  # fallback to original
 
 
 # ── Layer 2: reorder skills ────────────────────────────────────────────
@@ -127,11 +164,12 @@ def reorder_skills(resume: dict, jd_analysis: dict) -> list:
     ATS systems weight skills listed earlier more heavily.
     """
     all_skills = (
-        resume["skills"]["languages"]  +
-        resume["skills"]["frameworks"] +
-        resume["skills"]["ai_ml"]      +
-        resume["skills"]["tools"]      +
-        resume["skills"]["other"]
+        resume["skills"].get("languages",  []) +
+        resume["skills"].get("frameworks", []) +
+        resume["skills"].get("ai_ml",      []) +
+        resume["skills"].get("cloud",      []) +
+        resume["skills"].get("tools",      []) +
+        resume["skills"].get("other",      [])
     )
 
     required_lower    = [s.lower() for s in jd_analysis["required_skills"]]
@@ -176,7 +214,9 @@ def reframe_bullets(bullets: list, jd_analysis: dict,
         content = result.content.strip()
         start   = content.find("[")
         end     = content.rfind("]") + 1
-        return json.loads(content[start:end])
+        if start != -1 and end > start:
+            return json.loads(content[start:end])
+        return bullets  # fallback to original
 
 
 # ── Layer 4: select best projects ─────────────────────────────────────
@@ -217,7 +257,9 @@ def select_best_projects(projects: list, jd_analysis: dict,
         content = result.content.strip()
         start   = content.find("[")
         end     = content.rfind("]") + 1
-        return json.loads(content[start:end])
+        if start != -1 and end > start:
+            return json.loads(content[start:end])
+        return top_projects  # fallback to originals
 
 
 # ── Layer 5: ATS keyword injection ────────────────────────────────────

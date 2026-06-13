@@ -41,7 +41,9 @@ SKIP_TITLES = [
     "social media", "telecaller", "loan officer", "finance",
     "operations executive", "hr executive", "legal",
     "civil engineer", "mechanical engineer", "electrical engineer",
-    "nursing", "pharmacy", "doctor", "teacher", "professor"
+    "nursing", "pharmacy", "doctor", "teacher", "professor" , "senior ai", "lead ai", "principal ai", "sr. ai",
+    "senior engineer", "lead engineer", "senior developer",
+    "8 to 13", "5 to 8", "7 to", "10 to", "12 to", "15 to", "20 to", "25 to", "30+"
 ]
 
 # At least one of these must appear in job title
@@ -313,6 +315,15 @@ def search_and_extract(driver, role: str,
                 job_url = title_el.get("href", "") \
                           if title_el   else ""
 
+                # Skip jobs requiring more than 4 years experience
+                exp_text = exp.lower()
+                if any(x in exp_text for x in [
+                    "5-", "6-", "7-", "8-", "9-", "10-",
+                    "5 to", "6 to", "7 to", "8 to",
+                    "5+ yr", "6+ yr", "7+ yr"
+                ]):
+                    continue
+                
                 # Clean up loc — remove extra text
                 loc = loc.split("|")[0].strip()[:60]
 

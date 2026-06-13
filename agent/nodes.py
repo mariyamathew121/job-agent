@@ -87,12 +87,35 @@ def node_tailor(state: dict) -> dict:
 
     try:
         # 5-layer tailoring
-        tailored = tailor_resume(
-            BASE_RESUME,
-            state["jd_analysis"],
-            state["job_title"],
-            state["company"]
-        )
+        try:
+            tailored = tailor_resume(
+                BASE_RESUME,
+                state["jd_analysis"],
+                state["job_title"],
+                state["company"]
+            )
+        except Exception as tailor_err:
+            print(f"  Tailoring error: {tailor_err}")
+            # Use base resume as fallback
+            tailored = {
+                **BASE_RESUME,
+                "summary": BASE_RESUME["summary"],
+                "skills_ordered": (
+                    BASE_RESUME["skills"].get("languages",  []) +
+                    BASE_RESUME["skills"].get("ai_ml",      []) +
+                    BASE_RESUME["skills"].get("cloud",      []) +
+                    BASE_RESUME["skills"].get("tools",      []) +
+                    BASE_RESUME["skills"].get("frameworks", []) +
+                    BASE_RESUME["skills"].get("other",      [])
+                ),
+                "tailored_for": {
+                    "job_title": state["job_title"],
+                    "company":   state["company"],
+                    "keywords":  state["jd_analysis"].get(
+                        "keywords_for_ats", []
+                    )
+                }
+            }
 
         # ATS score gate
         ats = score_and_decide(tailored, state["job_description"])
@@ -197,48 +220,49 @@ def node_answer_questions(state: dict) -> dict:
 # ── Node 6: Submit application ────────────────────────────────────────
 
 def node_submit(state: dict) -> dict:
-    """
-    Submits the application via Selenium form filler.
-    For now this is a placeholder — real Selenium code comes
-    in the submitter module (next module we build).
-    """
     print(f"[5/6] Submitting application...")
 
-    # TODO: replace with real Selenium submission
-    # from submitter.engine import submit_application
-    # result = submit_application(state)
+    # Block 1 — ATS score too low
+    if state.get("status") == "low_ats_score":
+        print(f"  Blocked — ATS score too low to submit")
+        return {**state, "status": "low_ats_score"}
 
-    # Placeholder — simulates successful submission
-    print(f"  [SIMULATED] Application submitted to {state['company']}")
+    # Block 2 — no PDF generated
+    if not state.get("pdf_path"):
+        print(f"  Blocked — no PDF generated")
+        return {**state, "status": "failed", "error": "No PDF"}
 
-    return {
-        **state,
-        "status":       "submitted",
-        "submitted_at": datetime.now().isoformat()
-    }
+    # Block 3 — ATS score check as safety net
+    ats = state.get("ats_result") or {}
+    if ats.get("ats_score", 0) < 70:
+        print(f"  Blocked — ATS score {ats.get('ats_score')}/100 < 70")
+        return {**state, "status": "low_ats_score"}
+
+    from submitter.engine import submit_application
+    return submit_application(state)
 
 
 # ── Node 7: Track result ───────────────────────────────────────────────
 
 def node_track(state: dict) -> dict:
-    """
-    Saves the final application result to the database.
-    For now prints a summary — real DB code comes in tracker module.
-    """
+    """Saves the final application result to the database."""
     print(f"[6/6] Tracking result...")
 
-    from tracker.database import save_application
-    save_application(state)
+    try:
+        from tracker.database import save_application
+        save_application(state)
+    except Exception as e:
+        print(f"  Database save error: {e}")
 
-    # TODO: replace with real DB save
-    # from tracker.database import save_application
-    # save_application(state)
+    # Safe access — use .get() with defaults
+    match = state.get("match") or {}
+    ats   = state.get("ats_result") or {}
 
     print(f"\n{'='*55}")
     print(f"  Job:     {state['job_title']} at {state['company']}")
     print(f"  Status:  {state['status']}")
-    print(f"  Match:   {state['match']['match_score']:.0%}")
-    print(f"  ATS:     {state['ats_result']['ats_score']}/100")
+    print(f"  Match:   {match.get('match_score', 0):.0%}")
+    print(f"  ATS:     {ats.get('ats_score', 0)}/100")
     print(f"  PDF:     {state.get('pdf_path', 'N/A')}")
     print(f"{'='*55}")
 
